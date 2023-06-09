@@ -11,6 +11,7 @@ aws_setup_secrets() {
         echo 'creating secrets'
         echo -e "[default]\naws_access_key_id = $aws_access_key_id\naws_secret_access_key = $aws_secret_access_key" > ./.aws/credentials
         echo -e "[default]\nregion = us-east-1" > ./.aws/config
+        aws configure
     fi
 
 }
