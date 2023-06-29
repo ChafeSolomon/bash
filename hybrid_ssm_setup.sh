@@ -19,4 +19,4 @@ run_script(){
 }
 
 information_gathering
-echo $registration_code $id_code $region
+run_script
