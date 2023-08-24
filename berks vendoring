@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# check if inside ip r if there is a connection to your computer with subnet 192.168.253.0/24 to establish if there is a connection to the vpn
+main(){
+    if ifconfig | grep -q '192.168.253'; then
+        echo 'connected to vpn...'
+        # Start Berks Vendor
+        vendor_start
+    else
+        echo 'not connected to vpn please connect to dev so that berks can vendor files from chef.tresata.com'
+        # Exit since not connected to vpn
+        exit
+    fi
+}
+# Make sure berks vendor script is saved inside a repo that contains cookbooks folder
+vendor_start(){
+    current_working_dir=$(pwd)
+    echo $current_working_dir
+    if [ ! -d "$current_working_dir/cookbooks" ]; then
+        echo 'creating cookbooks directory'
+        mkdir "$current_working_dir/cookbooks"
+    else
+        echo 'cookbooks folder exists'
+    fi
+
+    # Check if Berks file exists
+    if [ ! -f "$current_working_dir/Berksfile" ]; then
+        echo 'place berksfile in current working directory'
+        exit
+    fi
+
+    # Run Berks package
+    if [ $(berks -v) &> /dev/null ]; then
+        echo 'berks installed... running berks'
+        #######################################
+        berks vendor ./cookbooks/ -b ./Berksfile
+        if [ $? == 0 ]; then
+            echo "Please place cookbooks folder in the proper repository" 
+        fi
+        #######################################
+    else
+        echo 'berks not installed please install berks'
+        exit
+    fi    
+}
+
+main
